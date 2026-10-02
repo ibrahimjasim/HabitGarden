@@ -1,0 +1,568 @@
+<title>HabitGarden Launch Checklist</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --bg:#FBFAF6;
+  --surface:#FFFFFF;
+  --surface-raised:#FFFFFF;
+  --text:#1C2117;
+  --text-muted:#5C6653;
+  --text-faint:#8B9480;
+  --border:#E5E2D6;
+  --border-strong:#D3CFBE;
+  --accent:#2E9C4C;
+  --accent-soft:#E4F3E7;
+  --accent-text:#1F7A38;
+  --critical:#C4402F;
+  --critical-soft:#FBEAE7;
+  --warn:#B5791A;
+  --warn-soft:#FBF1DF;
+  --info:#3667A6;
+  --info-soft:#E8F0FA;
+  --done-strike:#8B9480;
+  --shadow: 0 1px 2px rgba(30,35,20,0.04), 0 1px 1px rgba(30,35,20,0.03);
+}
+
+:root:not([data-theme="light"]) {
+  @media (prefers-color-scheme: dark) {
+    --bg:#12150F;
+    --surface:#191D14;
+    --surface-raised:#1F2418;
+    --text:#EAEDE3;
+    --text-muted:#A3AC97;
+    --text-faint:#707A65;
+    --border:#2A2F22;
+    --border-strong:#383E2C;
+    --accent:#4CBB6C;
+    --accent-soft:#1E3324;
+    --accent-text:#6ECB8A;
+    --critical:#E27767;
+    --critical-soft:#3A241F;
+    --warn:#D9A94B;
+    --warn-soft:#3A2F19;
+    --info:#7CA6DA;
+    --info-soft:#1F2C3D;
+    --done-strike:#707A65;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+}
+
+:root[data-theme="dark"]{
+  --bg:#12150F;
+  --surface:#191D14;
+  --surface-raised:#1F2418;
+  --text:#EAEDE3;
+  --text-muted:#A3AC97;
+  --text-faint:#707A65;
+  --border:#2A2F22;
+  --border-strong:#383E2C;
+  --accent:#4CBB6C;
+  --accent-soft:#1E3324;
+  --accent-text:#6ECB8A;
+  --critical:#E27767;
+  --critical-soft:#3A241F;
+  --warn:#D9A94B;
+  --warn-soft:#3A2F19;
+  --info:#7CA6DA;
+  --info-soft:#1F2C3D;
+  --done-strike:#707A65;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+}
+
+.wrap{
+  max-width:760px;
+  margin:0 auto;
+  padding:56px 24px 120px;
+}
+
+header.hero{
+  margin-bottom:40px;
+}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--accent-text);
+  margin:0 0 10px;
+}
+h1{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:600;
+  font-size:clamp(30px,5vw,42px);
+  line-height:1.1;
+  margin:0 0 14px;
+  text-wrap:balance;
+  letter-spacing:-0.01em;
+}
+.lede{
+  font-size:16px;
+  color:var(--text-muted);
+  max-width:60ch;
+  margin:0 0 28px;
+}
+
+.meter-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px 22px;
+  box-shadow:var(--shadow);
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+.meter-ring{
+  position:relative;
+  width:64px;
+  height:64px;
+  flex:none;
+}
+.meter-ring svg{ transform:rotate(-90deg); }
+.meter-ring .pct{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:14px;
+  font-weight:500;
+}
+.meter-text .label{
+  font-size:13px;
+  color:var(--text-muted);
+  margin-bottom:2px;
+}
+.meter-text .count{
+  font-family:'JetBrains Mono',monospace;
+  font-variant-numeric:tabular-nums;
+  font-size:15px;
+  font-weight:500;
+}
+.meter-reset{
+  margin-left:auto;
+  background:none;
+  border:1px solid var(--border-strong);
+  color:var(--text-muted);
+  font-family:'Inter',sans-serif;
+  font-size:12px;
+  padding:7px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.meter-reset:hover{ border-color:var(--text-faint); color:var(--text); }
+.meter-reset:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+section.group{ margin-top:44px; }
+.group-head{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  margin-bottom:6px;
+}
+.group-head h2{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:600;
+  font-size:22px;
+  margin:0;
+}
+.group-count{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  color:var(--text-faint);
+  font-variant-numeric:tabular-nums;
+}
+.group-desc{
+  color:var(--text-muted);
+  font-size:14.5px;
+  max-width:62ch;
+  margin:0 0 18px;
+}
+
+.badge{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.03em;
+  padding:2px 8px;
+  border-radius:100px;
+  font-weight:500;
+}
+.badge.critical{ background:var(--critical-soft); color:var(--critical); }
+.badge.warn{ background:var(--warn-soft); color:var(--warn); }
+.badge.info{ background:var(--info-soft); color:var(--info); }
+
+.items{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.item{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  padding:14px 16px;
+  display:grid;
+  grid-template-columns:22px 1fr;
+  gap:12px;
+  align-items:start;
+}
+.item input[type="checkbox"]{
+  appearance:none;
+  -webkit-appearance:none;
+  width:20px;
+  height:20px;
+  border-radius:6px;
+  border:1.5px solid var(--border-strong);
+  background:var(--surface);
+  cursor:pointer;
+  display:grid;
+  place-content:center;
+  margin-top:1px;
+}
+.item input[type="checkbox"]:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+.item input[type="checkbox"]::after{
+  content:"";
+  width:11px;
+  height:11px;
+  clip-path:polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  background:transparent;
+  transform:scale(0.9);
+}
+.item input[type="checkbox"]:checked{
+  background:var(--accent);
+  border-color:var(--accent);
+}
+.item input[type="checkbox"]:checked::after{
+  background:white;
+}
+.item-body h3{
+  font-size:15px;
+  font-weight:600;
+  margin:0 0 4px;
+  color:var(--text);
+}
+.item.checked .item-body h3{
+  color:var(--done-strike);
+  text-decoration:line-through;
+  text-decoration-color:var(--border-strong);
+}
+.item-body p{
+  margin:0;
+  font-size:13.5px;
+  color:var(--text-muted);
+}
+.item.checked .item-body p{ color:var(--text-faint); }
+.item-body code, .item-body .path{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;
+  background:var(--accent-soft);
+  color:var(--accent-text);
+  padding:1px 5px;
+  border-radius:4px;
+  word-break:break-word;
+}
+.item.checked .item-body code{ background:var(--border); color:var(--text-faint); }
+
+.summary{
+  margin-top:56px;
+  padding-top:28px;
+  border-top:1px solid var(--border);
+}
+.summary h2{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:600;
+  font-size:20px;
+  margin:0 0 10px;
+}
+.summary p{
+  color:var(--text-muted);
+  font-size:14.5px;
+  max-width:64ch;
+}
+.summary .path{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;
+  color:var(--text-faint);
+}
+
+footer{
+  margin-top:48px;
+  font-size:12.5px;
+  color:var(--text-faint);
+}
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">HabitGarden &middot; iOS &middot; App Store readiness</p>
+    <h1>Launch checklist</h1>
+    <p class="lede">Everything below came from reading the full HabitGarden source (SwiftUI + SwiftData) on 2026-08-22, not from running the app — this environment can't launch Xcode or the Simulator. Check items off as you fix them; your progress is saved on this device only.</p>
+
+    <div class="meter-card">
+      <div class="meter-ring">
+        <svg width="64" height="64" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="27" fill="none" stroke="var(--border)" stroke-width="7"/>
+          <circle id="ringFg" cx="32" cy="32" r="27" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="169.6"/>
+        </svg>
+        <div class="pct" id="pctLabel">0%</div>
+      </div>
+      <div class="meter-text">
+        <div class="label">Overall readiness</div>
+        <div class="count" id="countLabel">0 / 0 checked</div>
+      </div>
+      <button class="meter-reset" id="resetBtn">Reset progress</button>
+    </div>
+  </header>
+
+  <section class="group" data-group="blockers">
+    <div class="group-head">
+      <h2>Before you submit</h2>
+      <span class="badge critical">5 blockers</span>
+    </div>
+    <p class="group-desc">Xcode will refuse to archive, or Apple will bounce the build, until these are fixed.</p>
+    <div class="items">
+
+      <label class="item">
+        <input type="checkbox" data-id="b1">
+        <div class="item-body">
+          <h3>Add the real app icon</h3>
+          <p><span class="path">Assets.xcassets/AppIcon.appiconset</span> only has a <code>Contents.json</code> — no image is assigned to any of the three 1024×1024 slots (light, dark, tinted). An archive will fail App Store Connect validation without one. Design a 1024×1024 icon (no transparency, no rounded corners — iOS masks it) and drag it into all three slots.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="b2">
+        <div class="item-body">
+          <h3>Garden and Insights leak data across accounts</h3>
+          <p><span class="path">GardenView.swift</span> and <span class="path">InsightsView.swift</span> both use an unfiltered <code>@Query private var habits: [Habit]</code> — every account on the device shows up in the garden and the stats. Only <span class="path">HabitListView</span> filters by <code>auth.currentUser?.id</code>. This directly contradicts US-24 and the "Per-User Data Isolation" claim in your own README, and it's the kind of thing App Review calls a privacy bug if two testers share a device.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="b3">
+        <div class="item-body">
+          <h3>Add in-app account deletion</h3>
+          <p>The app creates accounts (email/password and Sign in with Apple) but has no way to delete one. Guideline 5.1.1(v) requires an account-deletion path inside the app whenever it offers account creation — this is one of the most common rejection reasons for exactly this app shape. A "Delete account" row in a settings screen that removes the <code>AppAccount</code>, its habits, and clears the session is enough.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="b4">
+        <div class="item-body">
+          <h3>Fix the deployment target</h3>
+          <p><span class="path">IPHONEOS_DEPLOYMENT_TARGET</span> is set to <code>26.4</code> in both Debug and Release — almost certainly an Xcode default that slipped in, not a real requirement. As written, only devices already updated to the newest iOS can install the app, which is a devastating audience cut for no reason. Nothing in the code needs more than iOS 17 (SwiftData's minimum). Lower it to <code>17.0</code> or <code>18.0</code> in both build configurations.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="b5">
+        <div class="item-body">
+          <h3>Write and link a privacy policy</h3>
+          <p>App Store Connect requires a privacy policy URL before submission, and Sign in with Apple requires one too. It only needs to say what's true: name, email, and password hash are stored locally via SwiftData, nothing leaves the device, no analytics or third parties. Host it anywhere (a GitHub Pages page is fine) and paste the URL into App Store Connect's App Privacy section, then fill in the data-collection questionnaire (Name, Email Address, User ID — collected, not linked to tracking).</p>
+        </div>
+      </label>
+
+    </div>
+  </section>
+
+  <section class="group" data-group="strong">
+    <div class="group-head">
+      <h2>Fix before you're proud of it</h2>
+      <span class="badge warn">6 items</span>
+    </div>
+    <p class="group-desc">Won't get you rejected, but each one is a real bug, a security gap, or a listing you'll need anyway.</p>
+    <div class="items">
+
+      <label class="item">
+        <input type="checkbox" data-id="s1">
+        <div class="item-body">
+          <h3>Finish or remove the Program feature</h3>
+          <p><span class="path">Program.swift</span>, <span class="path">ProgramStep.swift</span>, and <span class="path">ProgramViewModel.swift</span> are fully built — checklist-style programs with steps — but no View ever presents them, so it's dead code shipping in the binary. <code>resetIfNeeded()</code> also looks inverted: it clears <code>completedAt</code> for steps completed <em>today</em> instead of stale ones from a previous day, so if it were wired up it would erase today's progress. Either build the screen for it or delete the three files for a cleaner v1.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="s2">
+        <div class="item-body">
+          <h3>Set the accent color asset</h3>
+          <p><span class="path">AccentColor.colorset/Contents.json</span> has no color value, so every tint in the app — including <code>ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME</code> — falls back to system blue instead of the "Primary Green #34C759" your README describes as the app's identity.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="s3">
+        <div class="item-body">
+          <h3>Salt the password hash</h3>
+          <p><span class="path">AuthViewModel.hash(_:)</span> is unsalted SHA-256. Low real-world risk since the database never leaves the device, but it's a one-line-of-reasoning fix worth having on record: append a per-account random salt (stored alongside the hash) before hashing.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="s4">
+        <div class="item-body">
+          <h3>Give Apple-ID accounts a real email field</h3>
+          <p><span class="path">handleAppleSignIn</span> stores Apple's opaque user identifier in <code>AppAccount.email</code> instead of the person's actual email, and hashes that identifier as the "password." It works for lookup, but any UI that ever displays <code>account.email</code> will show a meaningless token for Apple sign-ins. Add a dedicated <code>appleUserId</code> field and keep <code>email</code> for the real address (or nil).</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="s5">
+        <div class="item-body">
+          <h3>Decide what happens to a forgotten password</h3>
+          <p>There's no backend, so there's no email-based reset — but right now a forgotten password permanently locks a user out of their local data with no recovery path at all. At minimum, say so in the sign-in error copy; consider whether Sign in with Apple should be the primary path precisely because it sidesteps this.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="s6">
+        <div class="item-body">
+          <h3>Prepare the App Store Connect listing</h3>
+          <p>Screenshots for the required device sizes (6.9&Prime; and 6.5&Prime; iPhone at minimum), an app description, keywords, a support URL, and an age rating. Login, Habit List, Garden, and Insights are your four strongest screens to screenshot — they're the ones the README already calls "visualised features."</p>
+        </div>
+      </label>
+
+    </div>
+  </section>
+
+  <section class="group" data-group="polish">
+    <div class="group-head">
+      <h2>Worth doing, not urgent</h2>
+      <span class="badge info">6 items</span>
+    </div>
+    <p class="group-desc">Quality-of-life and craft improvements that separate "works" from "worthy of the store."</p>
+    <div class="items">
+
+      <label class="item">
+        <input type="checkbox" data-id="p1">
+        <div class="item-body">
+          <h3>Make the garden accessible</h3>
+          <p><span class="path">GardenView</span> draws everything on a Canvas, which VoiceOver can't see at all — a blind user gets a blank screen where your "wow" feature lives. Add a single <code>.accessibilityElement</code> over the canvas summarizing growth per habit ("Morning walk: 5 of 7 days, in bloom").</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="p2">
+        <div class="item-body">
+          <h3>Add unit tests for the pure logic</h3>
+          <p><span class="path">StreakCalculator</span> and <span class="path">InsightEngine</span> are pure functions with no SwiftUI or SwiftData dependency — the cheapest possible XCTest coverage, and the pieces most likely to silently regress (streak math especially, since it has real edge cases around "haven't completed today yet").</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="p3">
+        <div class="item-body">
+          <h3>Soften the notification permission ask</h3>
+          <p>Permission is requested in <span class="path">HabitGardenApp.init()</span>, before the user has even logged in or created a habit — a cold-open system prompt with zero context, which tends to get "Don't Allow" out of reflex. Ask instead the first time someone turns on a reminder in <span class="path">AddHabitView</span>, when the value is obvious.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="p4">
+        <div class="item-body">
+          <h3>Verify or drop iPad support</h3>
+          <p><span class="path">TARGETED_DEVICE_FAMILY</span> is <code>"1,2"</code> (iPhone + iPad), but every view uses plain <code>Form</code>/<code>List</code>/<code>NavigationStack</code> with no iPad-specific layout. Either test it on an iPad simulator and confirm it doesn't look stretched, or scope the target to iPhone only for v1.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="p5">
+        <div class="item-body">
+          <h3>Custom launch screen</h3>
+          <p><code>INFOPLIST_KEY_UILaunchScreen_Generation</code> is on, which gives a blank auto-generated launch screen. A launch screen matching the login view's leaf mark and background color removes the flash-of-white on cold start.</p>
+        </div>
+      </label>
+
+      <label class="item">
+        <input type="checkbox" data-id="p6">
+        <div class="item-body">
+          <h3>Refresh the README</h3>
+          <p>It predates Sign in with Apple and the goal-duration feature (both fully implemented in code) and doesn't mention the orphaned Program model. Worth a pass once the items above are settled, since App Store reviewers and future-you both read it.</p>
+        </div>
+      </label>
+
+    </div>
+  </section>
+
+  <div class="summary">
+    <h2>What HabitGarden actually is, for the record</h2>
+    <p>A fully native, offline-first SwiftUI + SwiftData habit tracker. Local email/password accounts (SHA-256 hashed) plus Sign in with Apple; habits with an emoji, a daily target of 1&ndash;20, an optional goal length, and an optional daily reminder via <code>UNCalendarNotificationTrigger</code>; a completion toggle with undo; a streak calculator that's forgiving about "haven't done it yet today"; a hand-drawn Canvas garden where each habit is a plant whose height reflects its 7-day completion rate, swaying at 30fps under a sky that shifts with the real time of day; and an Insights screen with a Swift Charts bar chart, headline stats, and four rule-based "smart insight" cards (best time of day, strongest weekday, week-over-week trend, most consistent habit). No network calls anywhere — everything lives in the on-device SQLite store SwiftData manages.</p>
+    <p style="margin-top:14px;">Source reviewed in full: <span class="path">HabitGardenApp, AuthViewModel, HabitListViewModel, ProgramViewModel, all 7 Views, all 3 Helpers, all 7 SwiftData models, HabitGarden.entitlements, project.pbxproj, Assets.xcassets, README.md, USERSTORIES.md.</span></p>
+  </div>
+
+  <footer>Reviewed by reading source only — this session's device bridge is a Linux sandbox and can't run Xcode or the iOS Simulator. Build and click through it yourself in Xcode to catch anything a static read can't.</footer>
+
+</div>
+
+<script>
+(function(){
+  var STORE_KEY = 'habitgarden-checklist-v1';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.item input[type="checkbox"]'));
+  var ringFg = document.getElementById('ringFg');
+  var pctLabel = document.getElementById('pctLabel');
+  var countLabel = document.getElementById('countLabel');
+  var CIRC = 169.6;
+
+  function safeGet(){
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){ return {}; }
+  }
+  function safeSet(state){
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){}
+  }
+
+  function render(){
+    var state = safeGet();
+    var checked = 0;
+    boxes.forEach(function(b){
+      var on = !!state[b.dataset.id];
+      b.checked = on;
+      b.closest('.item').classList.toggle('checked', on);
+      if(on) checked++;
+    });
+    var pct = boxes.length ? Math.round((checked / boxes.length) * 100) : 0;
+    ringFg.style.strokeDashoffset = String(CIRC - (CIRC * pct / 100));
+    pctLabel.textContent = pct + '%';
+    countLabel.textContent = checked + ' / ' + boxes.length + ' checked';
+  }
+
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){
+      var state = safeGet();
+      state[b.dataset.id] = b.checked;
+      safeSet(state);
+      render();
+    });
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    safeSet({});
+    render();
+  });
+
+  render();
+})();
+</script>
