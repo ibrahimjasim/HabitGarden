@@ -1,0 +1,5 @@
+# AI agent / Claude tooling
+.claude/
+.agents/
+skills-lock.json
+xcuserdata/
