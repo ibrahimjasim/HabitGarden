@@ -219,6 +219,14 @@ final class AuthViewModel {
         currentUser = user
     }
 
+    #if DEBUG
+    // Screenshot mode only: set the in-memory session without touching the
+    // saved login in UserDefaults.
+    func debugSetSession(_ user: AppUser?) {
+        currentUser = user
+    }
+    #endif
+
     // Converts a plain-text password into a SHA-256 hash for secure storage
     private func hash(_ password: String) -> String {
         let digest = SHA256.hash(data: Data(password.utf8))

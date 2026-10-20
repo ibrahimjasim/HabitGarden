@@ -17,6 +17,10 @@ struct HabitGardenApp: App {
 
     init() {
         // Ask the user for permission to send daily reminders
+        #if DEBUG
+        // Screenshot runs skip the permission alert so it doesn't cover the screen
+        if ScreenshotMode.isActive { return }
+        #endif
         Task {
             await NotificationManager.requestNotificationPermission()
         }
@@ -24,16 +28,42 @@ struct HabitGardenApp: App {
 
     var body: some Scene {
         WindowGroup {
-            // Auth gate: show the main screen if logged in, otherwise show login
-            if auth.isLoggedIn {
-                HabitListView()
+            #if DEBUG
+            if let screen = ScreenshotMode.screen {
+                // Used by scripts/take-screenshots.sh — opens one screen with demo data
+                ScreenshotRootView(screen: screen, auth: auth)
             } else {
-                LoginView(auth: auth)
+                authGate
             }
+            #else
+            authGate
+            #endif
         }
         // Make the auth view-model available to every view in the app
         .environment(auth)
         // Set up the local database with all the models the app uses
-        .modelContainer(for: [Habit.self, HabitCompletion.self, AppAccount.self, Program.self, ProgramStep.self])
+        .modelContainer(
+            for: [Habit.self, HabitCompletion.self, AppAccount.self, Program.self, ProgramStep.self],
+            inMemory: Self.useInMemoryStore
+        )
+    }
+
+    // Auth gate: show the main screen if logged in, otherwise show login
+    @ViewBuilder
+    private var authGate: some View {
+        if auth.isLoggedIn {
+            HabitListView()
+        } else {
+            LoginView(auth: auth)
+        }
+    }
+
+    // Screenshot runs use a throwaway database so demo data never mixes with real data
+    private static var useInMemoryStore: Bool {
+        #if DEBUG
+        return ScreenshotMode.isActive
+        #else
+        return false
+        #endif
     }
 }

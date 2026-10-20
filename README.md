@@ -114,23 +114,61 @@ Each user only sees their own habits. The habit list is filtered by `userId` to 
 
 ## Visualised Features
 
+<p align="center">
+  <img src="docs/screenshots/02-habit-list.png" alt="Habit list" width="200">
+  <img src="docs/screenshots/06-garden.png" alt="Garden" width="200">
+  <img src="docs/screenshots/07-insights.png" alt="Insights" width="200">
+</p>
+
 ### Login Screen
 A clean sign in / sign up form with a segmented control to switch between modes. The name field only appears in sign up mode. The submit button is disabled until all required fields are filled. Error alerts appear for invalid input or duplicate emails.
 
+<p align="center"><img src="docs/screenshots/01-login.png" alt="Login screen" width="300"></p>
+
 ### Habit List
-The main screen showing all habits with their emoji, name, streak count, reminder indicator, and a completion toggle button. The toolbar provides access to Insights, Garden, Sign Out, and Add Habit.
+The main screen showing all habits with their emoji, name, streak count, reminder indicator, and a completion toggle button. Multi-target habits show their progress (e.g. 2/3). The header gives access to Insights, Garden, the account menu (Sign Out / Delete Account) and Add Habit.
+
+<p align="center"><img src="docs/screenshots/02-habit-list.png" alt="Habit list" width="300"></p>
 
 ### Add Habit Form
 A form-based sheet with sections for name, daily target (stepper), emoji selection (grid + full picker), and an optional daily reminder with a time picker.
 
+<p align="center"><img src="docs/screenshots/03-add-habit.png" alt="Add habit form" width="300"></p>
+
+### Emoji Picker
+A categorised emoji browser opened from "Browse more" in the Add Habit form or by tapping the emoji on the Habit Detail screen.
+
+<p align="center"><img src="docs/screenshots/04-emoji-picker.png" alt="Emoji picker" width="300"></p>
+
 ### Habit Detail
 An edit screen displaying the habit's name, emoji (tap to change), and read-only statistics including current streak, total completions, target per day, and creation date.
 
+<p align="center"><img src="docs/screenshots/05-habit-detail.png" alt="Habit detail" width="300"></p>
+
 ### Garden View
-An animated canvas rendering plants growing from the ground. Each habit is a plant with a curved stem, leaves (appearing at 30%+ growth), and its emoji displayed as the flower at the top. A sun or moon is drawn based on the time of day. The background sky uses gradients for sunrise, daytime, sunset, and nighttime.
+An animated canvas rendering plants growing from the ground. Each habit is a plant whose height reflects the last 7 days of consistency, with its emoji displayed as the flower at the top. A sun or moon is drawn based on the time of day, and the sky gradient changes for sunrise, daytime, sunset, and nighttime.
+
+<p align="center"><img src="docs/screenshots/06-garden.png" alt="Garden view" width="300"></p>
 
 ### Insights Screen
 A scrollable dashboard with stat cards at the top, a weekly bar chart in the middle, smart insight cards below, and a per-habit streak list at the bottom.
+
+<p align="center"><img src="docs/screenshots/07-insights.png" alt="Insights screen" width="300"></p>
+
+### Empty State
+What a brand-new account sees before adding a first habit.
+
+<p align="center"><img src="docs/screenshots/08-empty-state.png" alt="Empty habit list" width="300"></p>
+
+### Updating the Screenshots
+
+All screenshots are generated from the real app with one command (run on a Mac with Xcode):
+
+```bash
+./scripts/take-screenshots.sh
+```
+
+The script builds the app, launches it in the iOS Simulator once per screen and saves the images to `docs/screenshots/`. It uses a DEBUG-only screenshot mode (`Helpers/ScreenshotMode.swift`) that opens each screen directly with demo habits in a temporary in-memory database, so your own data is never touched and none of this ships in the App Store build. Options: `DEVICE="iPhone 17 Pro Max"` to choose a simulator, `APPEARANCE=dark` for dark-mode shots.
 
 ---
 
