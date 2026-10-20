@@ -11,6 +11,7 @@
 #if DEBUG
 import SwiftUI
 import SwiftData
+import UIKit
 
 enum ScreenshotScreen: String, CaseIterable {
     case login
@@ -21,36 +22,79 @@ enum ScreenshotScreen: String, CaseIterable {
     case garden
     case insights
     case empty
+
+    // File name used in docs/screenshots (matches the README)
+    var fileName: String {
+        switch self {
+        case .login:       return "01-login"
+        case .habits:      return "02-habit-list"
+        case .addHabit:    return "03-add-habit"
+        case .emojiPicker: return "04-emoji-picker"
+        case .habitDetail: return "05-habit-detail"
+        case .garden:      return "06-garden"
+        case .insights:    return "07-insights"
+        case .empty:       return "08-empty-state"
+        }
+    }
 }
 
 enum ScreenshotMode {
+    // `-screenshot <screen>` launch argument (used by scripts/take-screenshots.sh)
     static let screen: ScreenshotScreen? = {
         let args = ProcessInfo.processInfo.arguments
         guard let i = args.firstIndex(of: "-screenshot"), args.indices.contains(i + 1) else { return nil }
         return ScreenshotScreen(rawValue: args[i + 1])
     }()
 
-    static var isActive: Bool { screen != nil }
+    // Project folder on the Mac, worked out from this source file's location.
+    static let projectRoot = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()   // Helpers
+        .deletingLastPathComponent()   // HabitGarden (sources)
+        .deletingLastPathComponent()   // HabitGarden (project)
+
+    static var captureTrigger: URL { projectRoot.appendingPathComponent("build/capture-screenshots") }
+    static var outputDir: URL { projectRoot.appendingPathComponent("docs/screenshots") }
+
+    // Auto-capture: if build/capture-screenshots exists, pressing Run in Xcode
+    // walks through every screen and saves each one to docs/screenshots/.
+    static let autoCapture: Bool = {
+        #if targetEnvironment(simulator)
+        return FileManager.default.fileExists(atPath: captureTrigger.path)
+        #else
+        return false
+        #endif
+    }()
+
+    static var isActive: Bool { screen != nil || autoCapture }
+
+    @MainActor
+    static func saveSnapshot(named name: String) {
+        let windows = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+        guard let window = windows.first(where: \.isKeyWindow) ?? windows.first else { return }
+        let renderer = UIGraphicsImageRenderer(bounds: window.bounds)
+        let image = renderer.image { _ in
+            window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+        }
+        let url = outputDir.appendingPathComponent(name + ".png")
+        do {
+            try image.pngData()?.write(to: url)
+            print("📸 Saved \(url.path)")
+        } catch {
+            print("📸 Could not save \(name): \(error)")
+        }
+    }
 }
 
-struct ScreenshotRootView: View {
+// The view shown for one screen, with demo data already in place.
+private struct ScreenshotContent: View {
     let screen: ScreenshotScreen
     let auth: AuthViewModel
-
-    @Environment(\.modelContext) private var context
-    @State private var ready = false
-    @State private var featured: Habit?
-    @State private var pickedEmoji = "🌱"
+    let featured: Habit?
+    @Binding var pickedEmoji: String
 
     var body: some View {
-        Group {
-            if ready { content } else { Color.clear }
-        }
-        .task { prepare() }
-    }
-
-    @ViewBuilder
-    private var content: some View {
         switch screen {
         case .login:
             LoginView(auth: auth)
@@ -76,6 +120,28 @@ struct ScreenshotRootView: View {
             NavigationStack { InsightsView() }
         }
     }
+}
+
+// Single screen (launch argument mode)
+struct ScreenshotRootView: View {
+    let screen: ScreenshotScreen
+    let auth: AuthViewModel
+
+    @Environment(\.modelContext) private var context
+    @State private var ready = false
+    @State private var featured: Habit?
+    @State private var pickedEmoji = "🌱"
+
+    var body: some View {
+        Group {
+            if ready {
+                ScreenshotContent(screen: screen, auth: auth, featured: featured, pickedEmoji: $pickedEmoji)
+            } else {
+                Color.clear
+            }
+        }
+        .task { prepare() }
+    }
 
     private func prepare() {
         guard !ready else { return }
@@ -93,6 +159,52 @@ struct ScreenshotRootView: View {
         }
         try? context.save()
         ready = true
+    }
+}
+
+// Auto-capture mode: shows every screen in turn and saves a PNG of each.
+struct ScreenshotCaptureView: View {
+    let auth: AuthViewModel
+
+    @Environment(\.modelContext) private var context
+    @State private var current: ScreenshotScreen?
+    @State private var featured: Habit?
+    @State private var pickedEmoji = "🌱"
+
+    var body: some View {
+        Group {
+            if let current {
+                ScreenshotContent(screen: current, auth: auth, featured: featured, pickedEmoji: $pickedEmoji)
+                    .id(current)
+            } else {
+                Color.clear
+            }
+        }
+        .task { await run() }
+    }
+
+    private func run() async {
+        let account = AppAccount(email: "demo@habitgarden.app", name: "Alex", passwordHash: "")
+        context.insert(account)
+        let demoUser = AppUser(id: account.id.uuidString, name: account.name, email: account.email)
+        featured = DemoData.seed(userId: demoUser.id, context: context)
+        try? context.save()
+        try? FileManager.default.createDirectory(at: ScreenshotMode.outputDir, withIntermediateDirectories: true)
+
+        for screen in ScreenshotScreen.allCases {
+            switch screen {
+            case .login: auth.debugSetSession(nil)
+            case .empty: auth.debugSetSession(AppUser(id: "empty-user", name: "Sam", email: nil))
+            default:     auth.debugSetSession(demoUser)
+            }
+            current = screen
+            try? await Task.sleep(for: .seconds(3))
+            ScreenshotMode.saveSnapshot(named: screen.fileName)
+            current = nil
+            try? await Task.sleep(for: .seconds(1))
+        }
+        try? FileManager.default.removeItem(at: ScreenshotMode.captureTrigger)
+        print("📸 All screenshots saved to \(ScreenshotMode.outputDir.path)")
     }
 }
 

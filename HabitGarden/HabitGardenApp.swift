@@ -32,6 +32,9 @@ struct HabitGardenApp: App {
             if let screen = ScreenshotMode.screen {
                 // Used by scripts/take-screenshots.sh — opens one screen with demo data
                 ScreenshotRootView(screen: screen, auth: auth)
+            } else if ScreenshotMode.autoCapture {
+                // Run from Xcode while build/capture-screenshots exists → saves every screen
+                ScreenshotCaptureView(auth: auth)
             } else {
                 authGate
             }
