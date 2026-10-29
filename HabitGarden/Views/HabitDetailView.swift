@@ -64,7 +64,8 @@ struct HabitDetailView: View {
 
             // Read-only statistics about this habit
             Section("Stats") {
-                LabeledContent("Streak", value: "\(StreakCalculator.currentStreak(for: habit)) days")
+                let streak = StreakCalculator.currentStreak(for: habit)
+                LabeledContent("Streak", value: "\(streak) \(streak == 1 ? "day" : "days")")
                 LabeledContent("Total completions", value: "\(habit.completions.count)")
                 LabeledContent("Target per day", value: "\(habit.targetPerDay)")
                 LabeledContent("Created", value: habit.createdAt.formatted(date: .abbreviated, time: .omitted))

@@ -243,13 +243,17 @@ struct GardenView: View {
 
     private func label(for habit: Habit, streak: Int) -> some View {
         VStack(spacing: 1) {
-            HStack(spacing: 4) {
-                Text(habit.emoji.isEmpty ? "🌱" : habit.emoji).font(.system(size: 13))
-                Text(habit.name).font(.brickHeading(11.5)).foregroundStyle(Brick.ink)
-            }
+            // Emoji sits above the name so the name gets the full column width;
+            // side by side, narrow columns broke names mid-word ("Medi / tate").
+            Text(habit.emoji.isEmpty ? "🌱" : habit.emoji).font(.system(size: 13))
+            Text(habit.name)
+                .font(.brickHeading(11.5)).foregroundStyle(Brick.ink)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.7)
             switch stage(for: habit) {
             case .bloomed:
-                Text("🌿 Goal reached · \(streak) days")
+                Text("🌿 Goal reached · \(streak) \(streak == 1 ? "day" : "days")")
                     .font(.brickBodyHeavy(10)).foregroundStyle(Brick.ink.opacity(0.8))
             case .seed:
                 Text("🌰 Just planted")
@@ -259,12 +263,13 @@ struct GardenView: View {
                     Text("🔥 \(daysCompleted(for: habit))/\(goal) days")
                         .font(.brickBodyHeavy(10)).foregroundStyle(Brick.ink.opacity(0.8))
                 } else {
-                    Text("🔥 \(streak) days")
+                    Text("🔥 \(streak) \(streak == 1 ? "day" : "days")")
                         .font(.brickBodyHeavy(10)).foregroundStyle(Brick.ink.opacity(0.8))
                 }
             }
         }
-        .padding(.horizontal, 10)
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, 6)
         .padding(.vertical, 5)
         .brickCard(fill: Brick.cream, cornerRadius: 12, borderWidth: 2.5, shadowOffset: 2.5)
     }
