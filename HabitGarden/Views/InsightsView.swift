@@ -73,7 +73,7 @@ struct InsightsView: View {
                         BrickStatCard(
                             title: "Best streak",
                             value: "\(bestStreak)",
-                            subtitle: "days",
+                            subtitle: bestStreak == 1 ? "day" : "days",
                             symbol: "flame.fill",
                             tint: Brick.red
                         )
